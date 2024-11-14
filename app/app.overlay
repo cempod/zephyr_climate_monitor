@@ -1,0 +1,54 @@
+#include <zephyr/dt-bindings/mipi_dbi/mipi_dbi.h>
+
+/ {
+	chosen {
+		zephyr,display = &st7796s_320x480;
+	};
+
+    backlight_leds: backlight_leds {
+		compatible = "gpio-leds";
+		display_back_led: display_back_led_0 {
+			gpios = <&gpioa 1 GPIO_ACTIVE_HIGH>;
+			label = "display backlight";
+		};
+	};
+
+    aliases {
+		backlight0 = &display_back_led;
+	};
+
+	mipi_dbi_st7796s_320x480 {
+		compatible = "zephyr,mipi-dbi-spi";
+		spi-dev = <&spi2>;
+		dc-gpios = <&gpioa 2 GPIO_ACTIVE_HIGH>;	/* D9 */
+		reset-gpios = <&gpioa 3 GPIO_ACTIVE_LOW>;	/* D8 */
+		write-only;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		st7796s_320x480: st7796s@0 {
+			compatible = "sitronix,st7796s";
+			mipi-max-frequency = <40000000>;
+			reg = <0>;
+			width = <480>;
+			height = <320>;
+            vcmpctl = <0x0A>;
+            madctl = <0x28>;
+            pwr1 = [80 45];
+            pwr2 = <0x13>;
+            pwr3 = <0xA7>;
+            doca = [40 8A 00 00 29 19 A5 33];
+			pgc = [D0 08 0F 06 06 33 30 33 47 17 13 13 2B 31];
+            ngc = [D0 0A 11 0B 09 07 2F 33 47 38 15 16 2C 32];
+		};
+	};
+};
+
+&spi2 {
+	status = "okay";
+	pinctrl-0 = <&spi2_sck_pb13 &spi2_miso_pb14 &spi2_mosi_pb15>;
+	pinctrl-names = "default";
+	cs-gpios = <&gpiob 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+};
+
+
