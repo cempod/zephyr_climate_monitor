@@ -1,0 +1,6 @@
+[submodule "zephyr"]
+	path = zephyr
+	url = https://github.com/cempod/zephyr
+[submodule "boards"]
+	path = boards
+	url = https://github.com/cempod/zephyr-rtos-boards
