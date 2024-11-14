@@ -5,6 +5,12 @@
 		zephyr,display = &st7796s_320x480;
 	};
 
+	lvgl_pointer {
+		compatible = "zephyr,lvgl-pointer-input";
+		input = <&ft5336>;
+		invert-y;
+	};
+
     backlight_leds: backlight_leds {
 		compatible = "gpio-leds";
 		display_back_led: display_back_led_0 {
@@ -51,4 +57,11 @@
 	cs-gpios = <&gpiob 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 };
 
-
+&i2c1 {
+	pinctrl-0 = <&i2c1_scl_pb6 &i2c1_sda_pb7>;
+	ft5336: ft5336@38 {
+		compatible = "focaltech,ft5336";
+		reg = <0x38>;
+		reset-gpios = <&gpiob 5 GPIO_ACTIVE_LOW>;
+	};
+};
