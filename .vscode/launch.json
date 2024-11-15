@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "openocd",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "servertype": "openocd",
+            "executable": "./build/zephyr/zephyr.elf",
+            "svdFile": "STM32H723VGTX_FLASH.ld",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32h7x.cfg"
+            ],
+            "overrideLaunchCommands": [
+                "monitor reset_config none"
+            ]
+        }
+    ]
+}
