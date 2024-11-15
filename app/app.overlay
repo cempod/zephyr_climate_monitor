@@ -3,6 +3,7 @@
 / {
 	chosen {
 		zephyr,display = &st7796s_320x480;
+		zephyr,console = &cdc_acm_uart0;
 	};
 
 	lvgl_pointer {
@@ -63,5 +64,11 @@
 		compatible = "focaltech,ft5336";
 		reg = <0x38>;
 		reset-gpios = <&gpiob 5 GPIO_ACTIVE_LOW>;
+	};
+};
+
+&zephyr_udc0 {
+	cdc_acm_uart0: cdc_acm_uart0 {
+		compatible = "zephyr,cdc-acm-uart";
 	};
 };
