@@ -3,7 +3,6 @@
 / {
 	chosen {
 		zephyr,display = &st7796s_320x480;
-		zephyr,console = &cdc_acm_uart0;
 	};
 
 	lvgl_pointer {
@@ -27,8 +26,8 @@
 	mipi_dbi_st7796s_320x480 {
 		compatible = "zephyr,mipi-dbi-spi";
 		spi-dev = <&spi2>;
-		dc-gpios = <&gpioa 2 GPIO_ACTIVE_HIGH>;	/* D9 */
-		reset-gpios = <&gpioa 3 GPIO_ACTIVE_LOW>;	/* D8 */
+		dc-gpios = <&gpioa 2 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpioa 3 GPIO_ACTIVE_LOW>;
 		write-only;
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -47,8 +46,22 @@
             doca = [40 8A 00 00 29 19 A5 33];
 			pgc = [D0 08 0F 06 06 33 30 33 47 17 13 13 2B 31];
             ngc = [D0 0A 11 0B 09 07 2F 33 47 38 15 16 2C 32];
+			mipi-mode = <MIPI_DBI_MODE_SPI_4WIRE>;
 		};
 	};
+
+};
+
+&dma1 {
+	status = "okay";
+};
+
+&dmamux1{
+	status = "okay";
+};
+
+&sram2 {
+	zephyr,memory-attr = < DT_MEM_ARM(ATTR_MPU_RAM_NOCACHE) >;
 };
 
 &spi2 {
@@ -56,6 +69,9 @@
 	pinctrl-0 = <&spi2_sck_pb13 &spi2_miso_pb14 &spi2_mosi_pb15>;
 	pinctrl-names = "default";
 	cs-gpios = <&gpiob 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+	dmas = <&dmamux1 0 40 STM32_DMA_PERIPH_TX
+			&dmamux1 1 39 STM32_DMA_PERIPH_RX>;
+	dma-names = "tx", "rx";
 };
 
 &i2c1 {

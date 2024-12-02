@@ -1,1 +1,1 @@
-west build -p auto -b weact_stm32h723_core app -- -DBOARD_ROOT=..
+west build -p auto -b weact_stm32h723_core app --force -- -DBOARD_ROOT=..

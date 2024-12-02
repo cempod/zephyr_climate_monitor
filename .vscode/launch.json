@@ -12,9 +12,6 @@
             "configFiles": [
                 "interface/stlink.cfg",
                 "target/stm32h7x.cfg"
-            ],
-            "overrideLaunchCommands": [
-                "monitor reset_config none"
             ]
         }
     ]

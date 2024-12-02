@@ -17,9 +17,18 @@
 #include <zephyr/usb/usb_device.h>
 #include <zephyr/usb/usbd.h>
 #include <zephyr/drivers/uart.h>
+#include <zephyr/sys/ring_buffer.h>
 
-BUILD_ASSERT(DT_NODE_HAS_COMPAT(DT_CHOSEN(zephyr_console), zephyr_cdc_acm_uart),
-	     "Console device is not ACM CDC UART device");
+const struct device *const uart_dev = DEVICE_DT_GET_ONE(zephyr_cdc_acm_uart);
+
+#define RING_BUF_SIZE 1024
+uint8_t ring_buffer[RING_BUF_SIZE];
+
+struct ring_buf ringbuf;
+
+static bool rx_throttled;
+
+lv_obj_t *console_label;
 
 #define LOG_LEVEL CONFIG_LOG_DEFAULT_LEVEL
 #include <zephyr/logging/log.h>
@@ -29,24 +38,84 @@ LOG_MODULE_REGISTER(app);
 
 static const struct gpio_dt_spec display_led = GPIO_DT_SPEC_GET(DISPLAY_LED_NODE, gpios);
 
-static uint32_t count;
+struct data_item_type {
+    uint8_t str[64];
+};
 
-static void lv_btn_click_callback(lv_event_t *e)
+char console_msgq_buffer[10 * sizeof(struct data_item_type)];
+struct k_msgq console_msgq;
+
+
+
+static void interrupt_handler(const struct device *dev, void *user_data)
 {
-	ARG_UNUSED(e);
+	ARG_UNUSED(user_data);
 
-	count = 0;
+	while (uart_irq_update(dev) && uart_irq_is_pending(dev)) {
+		if (!rx_throttled && uart_irq_rx_ready(dev)) {
+			int recv_len, rb_len;
+			uint8_t buffer[64];
+			size_t len = MIN(ring_buf_space_get(&ringbuf),
+					 sizeof(buffer));
+
+			if (len == 0) {
+				/* Throttle because ring buffer is full */
+				uart_irq_rx_disable(dev);
+				rx_throttled = true;
+				continue;
+			}
+
+			recv_len = uart_fifo_read(dev, buffer, len);
+			if (recv_len < 0) {
+				LOG_ERR("Failed to read UART FIFO");
+				recv_len = 0;
+			};
+
+			rb_len = ring_buf_put(&ringbuf, buffer, recv_len);
+			if (rb_len < recv_len) {
+				LOG_ERR("Drop %u bytes", recv_len - rb_len);
+			}
+
+			LOG_DBG("tty fifo -> ringbuf %d bytes", rb_len);
+			if (rb_len) {
+				uart_irq_tx_enable(dev);
+			}
+		}
+
+		if (uart_irq_tx_ready(dev)) {
+			uint8_t buffer[64];
+			int rb_len, send_len;
+
+			rb_len = ring_buf_get(&ringbuf, buffer, sizeof(buffer));
+			if (!rb_len) {
+				LOG_DBG("Ring buffer empty, disable TX IRQ");
+				uart_irq_tx_disable(dev);
+				continue;
+			}
+
+			if (rx_throttled) {
+				uart_irq_rx_enable(dev);
+				rx_throttled = false;
+			}
+
+			send_len = uart_fifo_fill(dev, buffer, rb_len);
+			if (send_len < rb_len) {
+				LOG_ERR("Drop %d bytes", rb_len - send_len);
+			}
+
+			//lv_label_ins_text(console_label, LV_LABEL_POS_LAST, (char*)buffer);
+			struct data_item_type data;
+			memcpy(data.str, buffer, sizeof(buffer));
+			k_msgq_put(&console_msgq, &data, K_NO_WAIT);
+
+			LOG_DBG("ringbuf -> tty fifo %d bytes", send_len);
+		}
+	}
 }
 
 int main(void)
 {
-	const struct device *const dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_console));
-	uint32_t dtr = 0;
-
-	if (usb_enable(NULL)) {
-		return 0;
-	}
-
+	k_msgq_init(&console_msgq, console_msgq_buffer, sizeof(struct data_item_type), 10);
 	if (!gpio_is_ready_dt(&display_led)) {
 		return 0;
 	}
@@ -59,10 +128,45 @@ int main(void)
 			return 0;
 		}
 
-	char count_str[11] = {0};
+	ret = usb_enable(NULL);
+
+	if (ret != 0) {
+		LOG_ERR("Failed to enable USB");
+		return 0;
+	}
+
+	ring_buf_init(&ringbuf, sizeof(ring_buffer), ring_buffer);
+
+	while (true) {
+		uint32_t dtr = 0U;
+
+		uart_line_ctrl_get(uart_dev, UART_LINE_CTRL_DTR, &dtr);
+		if (dtr) {
+			break;
+		} else {
+			/* Give CPU resources to low priority threads. */
+			k_sleep(K_MSEC(100));
+		}
+	}
+
+	ret = uart_line_ctrl_set(uart_dev, UART_LINE_CTRL_DCD, 1);
+	if (ret) {
+		LOG_WRN("Failed to set DCD, ret code %d", ret);
+	}
+
+	ret = uart_line_ctrl_set(uart_dev, UART_LINE_CTRL_DSR, 1);
+	if (ret) {
+		LOG_WRN("Failed to set DSR, ret code %d", ret);
+	}
+
+	/* Wait 100ms for the host to do all settings */
+	k_msleep(100);
+
+	uart_irq_callback_set(uart_dev, interrupt_handler);
+
+	/* Enable rx interrupts */
+	uart_irq_rx_enable(uart_dev);
 	const struct device *display_dev;
-	lv_obj_t *hello_world_label;
-	lv_obj_t *count_label;
 
 	display_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
 	if (!device_is_ready(display_dev)) {
@@ -70,41 +174,24 @@ int main(void)
 		return 0;
 	}
 
-	if (IS_ENABLED(CONFIG_LV_Z_POINTER_INPUT)) {
-		lv_obj_t *hello_world_button;
+	console_label = lv_label_create(lv_scr_act());
 
-		hello_world_button = lv_btn_create(lv_scr_act());
-		lv_obj_align(hello_world_button, LV_ALIGN_CENTER, 0, -15);
-		lv_obj_add_event_cb(hello_world_button, lv_btn_click_callback, LV_EVENT_CLICKED,
-				    NULL);
-		hello_world_label = lv_label_create(hello_world_button);
-	} else {
-		hello_world_label = lv_label_create(lv_scr_act());
-	}
-
-	lv_label_set_text(hello_world_label, "Hello world!");
-	lv_obj_align(hello_world_label, LV_ALIGN_CENTER, 0, 0);
-
-	count_label = lv_label_create(lv_scr_act());
-	lv_obj_align(count_label, LV_ALIGN_BOTTOM_MID, 0, 0);
+	lv_label_set_text(console_label, "");
+	lv_obj_align(console_label, LV_ALIGN_OUT_TOP_MID, 0, 0);
+	lv_obj_set_width(console_label, 480);
+	//lv_obj_set_height(console_label, 320);
+	lv_label_set_long_mode(console_label, LV_LABEL_LONG_WRAP); 
 
 	lv_task_handler();
 	display_blanking_off(display_dev);
 
-	while (!dtr) {
-		uart_line_ctrl_get(dev, UART_LINE_CTRL_DTR, &dtr);
-		/* Give CPU resources to low priority threads. */
-		k_sleep(K_MSEC(100));
-	}
 
 	while (1) {
-		if ((count % 100) == 0U) {
-			sprintf(count_str, "%d", count/100U);
-			lv_label_set_text(count_label, count_str);
-			printk("Count = %d\n", count/100U);
+		struct data_item_type data;
+		while(k_msgq_get(&console_msgq, &data, K_NO_WAIT) == 0) {
+			lv_label_ins_text(console_label, LV_LABEL_POS_LAST, (char*)data.str);
 		}
 		lv_task_handler();
-		++count;
-		k_sleep(K_MSEC(10));
+		k_sleep(K_USEC(1));
 	}
 }
