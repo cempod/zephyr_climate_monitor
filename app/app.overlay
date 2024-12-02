@@ -47,8 +47,16 @@
             doca = [40 8A 00 00 29 19 A5 33];
 			pgc = [D0 08 0F 06 06 33 30 33 47 17 13 13 2B 31];
             ngc = [D0 0A 11 0B 09 07 2F 33 47 38 15 16 2C 32];
+			color-invert;
 		};
 	};
+};
+
+&dma1 {
+	status = "okay";
+};
+&dmamux1{
+	status = "okay";
 };
 
 &spi2 {
@@ -56,6 +64,9 @@
 	pinctrl-0 = <&spi2_sck_pb13 &spi2_miso_pb14 &spi2_mosi_pb15>;
 	pinctrl-names = "default";
 	cs-gpios = <&gpiob 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+	dmas = <&dmamux1 0 40 STM32_DMA_PERIPH_TX
+		&dmamux1 1 39 STM32_DMA_PERIPH_RX>;
+	dma-names = "tx", "rx";
 };
 
 &i2c1 {
