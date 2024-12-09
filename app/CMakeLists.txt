@@ -4,4 +4,16 @@ cmake_minimum_required(VERSION 3.20.0)
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(blinky)
 
+file(GLOB_RECURSE SOURCES  "src/interface/*.c")
+
+add_library(interface INTERFACE)
+target_sources(interface INTERFACE ${SOURCES})
+target_include_directories(interface INTERFACE src/interface)
+
+add_compile_definitions(LV_LVGL_H_INCLUDE_SIMPLE)
+
 target_sources(app PRIVATE src/main.c)
+
+target_link_libraries(app PRIVATE
+    interface
+)

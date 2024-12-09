@@ -15,6 +15,8 @@
 #include <lvgl_input_device.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h>
+
+#include "main_page.h"
 LOG_MODULE_REGISTER(app);
 
 #define DISPLAY_LED_NODE DT_ALIAS(backlight0)
@@ -38,6 +40,8 @@ int main(void)
 		LOG_ERR("Device not ready, aborting");
 		return 0;
 	}
+	init_main_page();
+	load_main_page();
 
 	lv_task_handler();
 	display_blanking_off(display_dev);
