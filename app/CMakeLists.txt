@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.20.0)
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(blinky)
 
-file(GLOB_RECURSE SOURCES  "src/interface/*.c")
+file(GLOB_RECURSE SOURCES  "src/interface/*.c" "src/interface/fonts/*.c")
 
 add_library(interface INTERFACE)
 target_sources(interface INTERFACE ${SOURCES})

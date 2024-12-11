@@ -25,15 +25,17 @@ static lv_obj_t * pressure_header_label;
 static lv_obj_t * humidity_header_label;
 static lv_obj_t * co2_header_label;
 
+LV_FONT_DECLARE(comfortaa_16)
+
 void
 init_main_page(void) {
     main_screen = lv_obj_create(NULL);
     place_card(150, 150, 5, 55, &main_screen, &temperature_card, &temperature_card_header, &temperature_header_label);
-    set_label_text(temperature_header_label, "Temperature");
+    set_label_text(temperature_header_label, "Температура");
     place_card(150, 100, 5, 215, &main_screen, &pressure_card, &pressure_card_header, &pressure_header_label);
-    set_label_text(pressure_header_label, "Pressure");
+    set_label_text(pressure_header_label, "Давление");
     place_card(150, 100, 165, 215, &main_screen, &humidity_card, &humidity_card_header, &humidity_header_label);
-    set_label_text(humidity_header_label, "Humidity");
+    set_label_text(humidity_header_label, "Влажность");
     place_card(150, 100, 325, 215, &main_screen, &co2_card, &co2_card_header, &co2_header_label);
     set_label_text(co2_header_label, "CO2");
     place_headless_card(310, 150, 165, 55, &main_screen, &time_card);
@@ -58,7 +60,7 @@ place_card(int x_size, int y_size, int x_offset, int y_offset, lv_obj_t ** paren
     lv_obj_set_style_radius(*header, 0, 0);
     lv_obj_set_style_pad_all(*header,0,0);
     lv_obj_set_style_bg_color (*header , lv_color_make(255,51,51), 0);
-    place_label(0,0, header, header_label, &lv_font_montserrat_14);
+    place_label(0,0, header, header_label, &comfortaa_16);
 }
 
 void 
