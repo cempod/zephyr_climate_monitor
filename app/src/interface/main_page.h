@@ -9,5 +9,6 @@
 
 void init_main_page(void);
 void load_main_page(void);
+void set_theme(int theme);
 
 #endif
