@@ -10,6 +10,7 @@ void place_headless_card(int x_size, int y_size, int x_offset, int y_offset, lv_
 void place_label(int x_offset, int y_offset, lv_obj_t ** parent, lv_obj_t ** label, const lv_font_t * font);
 void set_label_text(lv_obj_t * label, const char* msg, ...);
 void set_label_color(lv_obj_t * label, lv_color_t color);
+void add_tile(lv_obj_t * parent);
 
 static lv_obj_t * main_screen;
 static lv_obj_t * temperature_card;
@@ -33,6 +34,7 @@ static lv_obj_t * temperature_label;
 static lv_obj_t * pressure_label;
 static lv_obj_t * humidity_label;
 static lv_obj_t * co2_label;
+static lv_obj_t * status_label;
 
 void
 init_main_page(void) {
@@ -48,6 +50,7 @@ init_main_page(void) {
     set_label_text(co2_header_label, "CO2");
     place_headless_card(260, 150, 215, 55, &main_screen, &time_card);
     place_headless_card(470, 40, 5, 5, &main_screen, &top_panel);
+    add_tile(top_panel);
     lv_obj_set_style_bg_color(top_panel, get_colors().header_color, 0);
     place_label(0,0, &time_card, &time_label, get_colors().big_font);
     place_label(0,-50, &time_card, &date_label, get_colors().main_font);
@@ -64,6 +67,7 @@ init_main_page(void) {
     set_label_text(pressure_label, "765mm");
     set_label_text(humidity_label, "49.8%%");
     set_label_text(co2_label, "632ppm");
+    set_label_text(status_label, "Показатели в норме");
 }
 
 void
@@ -160,4 +164,17 @@ set_theme(int theme) {
     lv_obj_set_style_border_color(co2_card, get_colors().border_color, 0);
     lv_obj_set_style_border_color(time_card, get_colors().border_color, 0);
     lv_obj_set_style_border_color(top_panel, get_colors().border_color, 0);
+}
+
+void 
+add_tile(lv_obj_t * parent) {
+    lv_obj_t * tile_view = lv_tileview_create(parent);
+    lv_obj_set_style_bg_color(tile_view, get_colors().header_color, 0);
+    lv_obj_set_scrollbar_mode(tile_view, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_t * tile1 = lv_tileview_add_tile(tile_view, 0, 0, LV_DIR_RIGHT);
+    place_label(0,0, &tile1, &status_label, get_colors().main_font);
+    lv_obj_set_width(status_label, 466); 
+    lv_obj_t * tile2 = lv_tileview_add_tile(tile_view, 1, 0, LV_DIR_LEFT);
+    lv_obj_t * settings_button = lv_btn_create(tile2);
+    lv_obj_align(settings_button, LV_ALIGN_RIGHT_MID, -5, 0);
 }
