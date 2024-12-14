@@ -176,5 +176,14 @@ add_tile(lv_obj_t * parent) {
     lv_obj_set_width(status_label, 466); 
     lv_obj_t * tile2 = lv_tileview_add_tile(tile_view, 1, 0, LV_DIR_LEFT);
     lv_obj_t * settings_button = lv_btn_create(tile2);
-    lv_obj_align(settings_button, LV_ALIGN_RIGHT_MID, -5, 0);
+    lv_obj_clear_state(settings_button, LV_STATE_FOCUS_KEY);
+    lv_obj_set_style_shadow_opa(settings_button, LV_OPA_TRANSP, 0);
+    lv_obj_set_style_bg_color(settings_button, get_colors().header_color, 0);
+    lv_obj_set_style_border_color(settings_button, get_colors().header_font_color, 0);
+    lv_obj_set_style_border_width(settings_button, 1, 0);
+    lv_obj_set_style_pad_all(settings_button, 3, 0);
+    lv_obj_align(settings_button, LV_ALIGN_RIGHT_MID, -3, 0);
+    lv_obj_t * settings_button_label;
+    place_label(0,0, &settings_button, &settings_button_label, get_colors().main_font);
+    set_label_text(settings_button_label, "Настройки");
 }
