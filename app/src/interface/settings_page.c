@@ -4,6 +4,8 @@
 
 void place_settings_top_panel(settings_top_panel_t * panel, lv_obj_t * parent);
 void set_settings_top_panel_theme(settings_top_panel_t * panel);
+void place_menu(menu_card_t * menu_card, lv_obj_t * parent);
+void set_menu_theme(menu_card_t * menu_card);
 
 static lv_obj_t * settings_screen;
 
@@ -14,10 +16,18 @@ static settings_top_panel_t settings_top_panel = {
     .y_offset = 5,
 };
 
+menu_card_t menu_card = {
+    .x_size = 470,
+    .y_size = 260,
+    .x_offset = 5,
+    .y_offset = 55,
+};
+
 void
 init_settings_page() {
     settings_screen = lv_obj_create(NULL);
     place_settings_top_panel(&settings_top_panel, settings_screen);
+    place_menu(&menu_card, settings_screen);
 }
 
 void
@@ -29,6 +39,7 @@ void
 set_settings_page_theme(int theme) {
     lv_obj_set_style_bg_color(settings_screen, get_colors().background_color, 0);
     set_settings_top_panel_theme(&settings_top_panel);
+    set_menu_theme(&menu_card);
 }
 
 static void back_button_event_handler(lv_event_t * e)
@@ -58,6 +69,7 @@ place_settings_top_panel(settings_top_panel_t * panel, lv_obj_t * parent) {
     set_label_text(panel->panel_label, "Настройки");
     set_settings_top_panel_theme(panel);
     lv_obj_add_event_cb(panel->back_button, back_button_event_handler, LV_EVENT_CLICKED, NULL);
+    set_settings_top_panel_theme(&settings_top_panel);
 }
 
 void
@@ -68,4 +80,19 @@ set_settings_top_panel_theme(settings_top_panel_t * panel) {
     lv_obj_set_style_border_color(panel->back_button, get_colors().header_font_color, 0);
     lv_obj_set_style_text_color(panel->panel_label, get_colors().header_font_color, 0);
     lv_obj_set_style_text_color(panel->back_button_label, get_colors().header_font_color, 0);
+}
+
+void
+place_menu(menu_card_t * menu_card, lv_obj_t * parent) {
+    menu_card->card = lv_obj_create(parent);
+    lv_obj_align(menu_card->card, LV_ALIGN_TOP_LEFT, menu_card->x_offset, menu_card->y_offset);
+    lv_obj_set_size(menu_card->card, menu_card->x_size, menu_card->y_size);
+    lv_obj_set_style_pad_all(menu_card->card,0,0);
+    set_menu_theme(menu_card);
+}
+
+void
+set_menu_theme(menu_card_t * menu_card) {
+    lv_obj_set_style_bg_color(menu_card->card, get_colors().background_color, 0);
+    lv_obj_set_style_border_color(menu_card->card, get_colors().border_color, 0);
 }
