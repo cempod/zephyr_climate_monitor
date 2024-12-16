@@ -51,4 +51,12 @@ void init_main_page(void);
 void load_main_page(void);
 void set_theme(int theme);
 
+void set_temperature(float temperature);
+void set_pressure(int pressure);
+void set_humidity(float humidity);
+void set_co2(int co2);
+void set_time(int hour, int minute);
+void set_date(int day, int month);
+void set_day_of_week(int day_of_week);
+
 #endif

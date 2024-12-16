@@ -67,17 +67,17 @@ init_main_page(void) {
     place_card(&temperature_card, main_screen);
     lv_obj_set_style_text_font(temperature_card.label,get_colors().big_font, 0);
     lv_obj_align(temperature_card.label, LV_ALIGN_CENTER, 0, 18);
-    set_label_text(temperature_card.label, "27.3°C");
+    set_temperature(27.36f);
     place_card(&pressure_card, main_screen);
-    set_label_text(pressure_card.label, "760mm");
+    set_pressure(760);
     place_card(&humidity_card, main_screen);
-    set_label_text(humidity_card.label, "45%%");
+    set_humidity(45.3);
     place_card(&co2_card, main_screen);
-    set_label_text(co2_card.label, "1200ppm");
+    set_co2(1200);
     place_datetime_card(&datetime_card, main_screen);
-    set_label_text(datetime_card.date_top_label, "16 декабря");
-    set_label_text(datetime_card.date_bottom_label, "Понедельник");
-    set_label_text(datetime_card.time_label, "12:44");
+    set_date(16, 12);
+    set_day_of_week(1);
+    set_time(12, 56);
     place_top_panel(&top_panel, main_screen);
     set_label_text(top_panel.status_label, "Показатели в норме");
 }
@@ -204,4 +204,41 @@ set_theme(int theme) {
     set_card_theme(&co2_card);
     set_datetime_card_theme(&datetime_card);
     set_top_panel_theme(&top_panel);
+}
+
+void
+set_temperature(float temperature) {
+    set_label_text(temperature_card.label, "%2.1f°C", (double)temperature);
+}
+
+void
+set_pressure(int pressure) {
+    set_label_text(pressure_card.label, "%dmm", pressure);
+}
+
+void
+set_humidity(float humidity) {
+    set_label_text(humidity_card.label, "%2.1f%%", (double)humidity);
+}
+
+void
+set_co2(int co2) {
+    set_label_text(co2_card.label, "%dppm", co2);
+}
+
+void
+set_time(int hour, int minute) {
+    set_label_text(datetime_card.time_label, "%d:%d", hour, minute);
+}
+
+void
+set_date(int day, int month) {
+    char *months[]={"%d января","%d февраля","%d марта","%d апреля","%d мая","%d июня","%d июля","%d августа","%d сентября","%d октября","%d ноября","%d декабря"};
+    set_label_text(datetime_card.date_top_label, months[month-1], day);
+}
+
+void
+set_day_of_week(int day_of_week) {
+    char *days[]={"Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"};
+    set_label_text(datetime_card.date_bottom_label, days[day_of_week-1]);
 }
