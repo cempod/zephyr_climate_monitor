@@ -21,6 +21,7 @@
 
     aliases {
 		backlight0 = &display_back_led;
+		rtc = &rtc;
 	};
 
 	mipi_dbi_st7796s_320x480 {

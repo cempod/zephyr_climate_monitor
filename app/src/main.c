@@ -15,16 +15,61 @@
 #include <lvgl_input_device.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/drivers/rtc.h>
+#include <zephyr/sys/util.h>
 
 #include "main_page.h"
 LOG_MODULE_REGISTER(app);
+
+const struct device *const rtc = DEVICE_DT_GET(DT_ALIAS(rtc));
 
 #define DISPLAY_LED_NODE DT_ALIAS(backlight0)
 
 static const struct gpio_dt_spec display_led = GPIO_DT_SPEC_GET(DISPLAY_LED_NODE, gpios);
 
-int main(void)
+static int set_date_time(const struct device *rtc)
 {
+	int ret = 0;
+	struct rtc_time tm = {
+		.tm_year = 2024 - 1900,
+		.tm_mon = 12 - 1,
+		.tm_mday = 16,
+		.tm_hour = 15,
+		.tm_min = 55,
+		.tm_sec = 0,
+	};
+
+	ret = rtc_set_time(rtc, &tm);
+	if (ret < 0) {
+		return ret;
+	}
+	return ret;
+}
+
+static int get_date_time(const struct device *rtc)
+{
+	int ret = 0;
+	struct rtc_time tm;
+
+	ret = rtc_get_time(rtc, &tm);
+	if (ret < 0) {
+		return ret;
+	}
+
+	set_time(tm.tm_hour, tm.tm_min);
+	set_date(tm.tm_mday, tm.tm_mon);
+
+	return ret;
+}
+
+int main(void)
+{	
+	if (!device_is_ready(rtc)) {
+		return 0;
+	}
+
+	set_date_time(rtc);
+
 	if (!gpio_is_ready_dt(&display_led)) {
 		return 0;
 	}
@@ -52,6 +97,7 @@ int main(void)
 		}
 
 	while (1) {
+		get_date_time(rtc);
 		lv_task_handler();
 		k_sleep(K_MSEC(10));
 	}
