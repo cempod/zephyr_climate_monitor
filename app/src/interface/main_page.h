@@ -49,7 +49,7 @@ typedef struct {
 
 void init_main_page(void);
 void load_main_page(void);
-void set_theme(int theme);
+void set_main_page_theme(int theme);
 
 void set_temperature(float temperature);
 void set_pressure(int pressure);

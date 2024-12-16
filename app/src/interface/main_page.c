@@ -1,8 +1,7 @@
 #include "main_page.h"
+#include "settings_page.h"
 #include "colors/colors.h"
-
-#include <stdio.h>
-#include <stdarg.h>
+#include "func.h"
 
 void place_card(card_t * card, lv_obj_t * parent);
 void set_card_theme(card_t * card);
@@ -10,8 +9,6 @@ void place_datetime_card(datetime_card_t * card, lv_obj_t * parent);
 void set_datetime_card_theme(datetime_card_t * card);
 void place_top_panel(top_panel_t * panel, lv_obj_t * parent);
 void set_top_panel_theme(top_panel_t * panel);
-lv_obj_t * place_label(int x_offset, int y_offset, lv_obj_t * parent, const lv_font_t * font);
-void set_label_text(lv_obj_t * label, const char* msg, ...);
 
 static lv_obj_t * main_screen;
 
@@ -85,7 +82,7 @@ init_main_page(void) {
 void
 load_main_page(void) {
     lv_scr_load(main_screen);
-    set_theme(DARK_THEME);
+    lv_obj_set_tile(top_panel.tile_view, top_panel.tile1, LV_ANIM_ON);
 }
 
 void 
@@ -138,6 +135,15 @@ set_datetime_card_theme(datetime_card_t * card) {
     lv_obj_set_style_text_color(card->time_label, get_colors().main_font_color, 0);
 }
 
+static void settings_button_event_handler(lv_event_t * e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+
+    if(code == LV_EVENT_CLICKED) {
+        load_settings_page();
+    }
+}
+
 void 
 place_top_panel(top_panel_t * panel, lv_obj_t * parent) {
     panel->card = lv_obj_create(parent);
@@ -159,11 +165,12 @@ place_top_panel(top_panel_t * panel, lv_obj_t * parent) {
     panel->settings_button_label = place_label(0,0, panel->settings_button, get_colors().main_font);
     set_label_text(panel->settings_button_label, "Настройки");
     set_top_panel_theme(panel);
+    lv_obj_add_event_cb(panel->settings_button, settings_button_event_handler, LV_EVENT_CLICKED, NULL);
 }
 
 void
 set_top_panel_theme(top_panel_t * panel) {
-    lv_obj_set_style_bg_color(panel->card, get_colors().card_background_color, 0);
+    lv_obj_set_style_bg_color(panel->card, get_colors().header_color, 0);
     lv_obj_set_style_border_color(panel->card, get_colors().border_color, 0);
     lv_obj_set_style_bg_color(panel->tile_view, get_colors().header_color, 0);
     lv_obj_set_style_bg_color(panel->settings_button, get_colors().header_color, 0);
@@ -172,30 +179,8 @@ set_top_panel_theme(top_panel_t * panel) {
     lv_obj_set_style_text_color(panel->settings_button_label, get_colors().header_font_color, 0);
 }
 
-lv_obj_t * 
-place_label(int x_offset, int y_offset, lv_obj_t * parent, const lv_font_t * font) {
-    lv_obj_t * label = lv_label_create(parent);
-    lv_label_set_long_mode(label, LV_LABEL_LONG_WRAP);
-    set_label_text(label, "Label");
-    lv_obj_set_width(label, LV_SIZE_CONTENT); 
-    lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0);
-    lv_obj_align(label, LV_ALIGN_CENTER, x_offset, y_offset);
-    lv_obj_set_style_text_font(label,font,0);
-    return label;
-}
-
 void
-set_label_text(lv_obj_t * label, const char* msg, ...) {
-    char str[50];
-    va_list ap;
-    va_start(ap, msg);
-    vsprintf(str, msg, ap);
-    va_end(ap);
-    lv_label_set_text(label, str);
-}
-
-void
-set_theme(int theme) {
+set_main_page_theme(int theme) {
     set_colors(theme);
     lv_obj_set_style_bg_color(main_screen, get_colors().background_color, 0);
     set_card_theme(&temperature_card);

@@ -19,6 +19,9 @@
 #include <zephyr/sys/util.h>
 
 #include "main_page.h"
+#include "settings_page.h"
+#include "colors.h"
+#include "func.h"
 LOG_MODULE_REGISTER(app);
 
 const struct device *const rtc = DEVICE_DT_GET(DT_ALIAS(rtc));
@@ -58,6 +61,7 @@ static int get_date_time(const struct device *rtc)
 
 	set_time(tm.tm_hour, tm.tm_min);
 	set_date(tm.tm_mday, tm.tm_mon);
+	set_day_of_week(tm.tm_wday);
 
 	return ret;
 }
@@ -86,6 +90,9 @@ int main(void)
 		return 0;
 	}
 	init_main_page();
+	init_settings_page();
+	set_theme(DARK_THEME);
+
 	load_main_page();
 
 	lv_task_handler();
