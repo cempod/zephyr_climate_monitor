@@ -60,8 +60,8 @@ static int get_date_time(const struct device *rtc)
 	}
 
 	set_time(tm.tm_hour, tm.tm_min);
-	set_date(tm.tm_mday, tm.tm_mon);
-	set_day_of_week(tm.tm_wday);
+	set_date(tm.tm_mday, tm.tm_mon+1);
+	set_day_of_week(tm.tm_wday+1);
 
 	return ret;
 }
