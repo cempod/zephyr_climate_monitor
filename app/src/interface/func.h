@@ -14,6 +14,12 @@
 #include "settings_page.h"
 
 static inline void
+init_interface(void) {
+    init_main_page();
+    init_settings_page();
+}
+
+static inline void
 set_theme(int theme) {
     set_colors(theme);
     set_main_page_theme(theme);

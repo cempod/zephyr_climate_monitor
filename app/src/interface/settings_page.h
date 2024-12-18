@@ -26,6 +26,7 @@ typedef struct {
     int y_offset;
     lv_obj_t * parent;
     lv_obj_t * card;
+    lv_obj_t * tab_view;
 } menu_card_t;
 
 

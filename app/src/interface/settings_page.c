@@ -88,6 +88,12 @@ place_menu(menu_card_t * menu_card, lv_obj_t * parent) {
     lv_obj_align(menu_card->card, LV_ALIGN_TOP_LEFT, menu_card->x_offset, menu_card->y_offset);
     lv_obj_set_size(menu_card->card, menu_card->x_size, menu_card->y_size);
     lv_obj_set_style_pad_all(menu_card->card,0,0);
+    menu_card->tab_view = lv_tabview_create(menu_card->card, LV_DIR_LEFT, 80);
+    lv_obj_set_style_border_side(lv_tabview_get_tab_btns(menu_card->tab_view), LV_BORDER_SIDE_RIGHT, LV_PART_ITEMS | LV_STATE_CHECKED);
+    lv_obj_set_style_text_font(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().main_font ,LV_PART_ITEMS);
+    /*lv_obj_t * tab1 = */lv_tabview_add_tab(menu_card->tab_view, "Дата и время");
+    
+    /*lv_obj_t * tab2 = */lv_tabview_add_tab(menu_card->tab_view, "Экран");
     set_menu_theme(menu_card);
 }
 
@@ -95,4 +101,10 @@ void
 set_menu_theme(menu_card_t * menu_card) {
     lv_obj_set_style_bg_color(menu_card->card, get_colors().background_color, 0);
     lv_obj_set_style_border_color(menu_card->card, get_colors().border_color, 0);
+    lv_obj_set_style_bg_color(menu_card->tab_view, get_colors().background_color, 0);
+    lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_color, 0);
+    lv_obj_set_style_text_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_font_color, 0);
+    lv_obj_set_style_border_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_font_color, LV_PART_ITEMS | LV_STATE_CHECKED);
+    lv_obj_set_style_text_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_font_color, LV_PART_ITEMS | LV_STATE_CHECKED);
+    lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_color, LV_PART_ITEMS | LV_STATE_CHECKED);
 }

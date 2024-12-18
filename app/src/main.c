@@ -89,8 +89,7 @@ int main(void)
 		LOG_ERR("Device not ready, aborting");
 		return 0;
 	}
-	init_main_page();
-	init_settings_page();
+	init_interface();
 	set_theme(DARK_THEME);
 
 	load_main_page();
