@@ -213,7 +213,7 @@ set_co2(int co2) {
 
 void
 set_time(int hour, int minute) {
-    set_label_text(datetime_card.time_label, "%d:%d", hour, minute);
+    set_label_text(datetime_card.time_label, "%02d:%02d", hour, minute);
 }
 
 void
