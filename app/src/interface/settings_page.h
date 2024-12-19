@@ -29,6 +29,13 @@ typedef struct {
     lv_obj_t * tab_view;
 } menu_card_t;
 
+typedef struct {
+    lv_obj_t * parent;
+    lv_obj_t * day_roller;
+    lv_obj_t * month_roller;
+    lv_obj_t * year_roller;
+} date_time_page_t;
+
 
 void init_settings_page(void);
 void load_settings_page(void);

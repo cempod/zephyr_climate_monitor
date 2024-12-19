@@ -72,7 +72,7 @@ init_main_page(void) {
     place_card(&co2_card, main_screen);
     set_co2(1200);
     place_datetime_card(&datetime_card, main_screen);
-    set_date(0, 0);
+    set_date(1, 1);
     set_day_of_week(1);
     set_time(0, 0);
     place_top_panel(&top_panel, main_screen);
