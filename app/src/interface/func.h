@@ -27,6 +27,14 @@ set_theme(int theme) {
 }
 
 static inline void
+update_date_time(int hour, int minute, int day, int month, int year, int day_of_week) {
+    set_time(hour, minute);
+	set_date(day, month);
+	set_day_of_week(day_of_week);
+	update_settings_date_time(hour, minute, day, month, year);
+}
+
+static inline void
 set_label_text(lv_obj_t * label, const char* msg, ...) {
     char str[50];
     va_list ap;

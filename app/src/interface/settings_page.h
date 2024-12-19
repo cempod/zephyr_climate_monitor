@@ -33,5 +33,6 @@ typedef struct {
 void init_settings_page(void);
 void load_settings_page(void);
 void set_settings_page_theme(int theme);
+void update_settings_date_time(int hour, int minute, int day, int month, int year);
 
 #endif

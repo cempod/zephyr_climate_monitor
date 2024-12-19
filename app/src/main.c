@@ -38,7 +38,7 @@ static int set_date_time(const struct device *rtc)
 		.tm_mon = 12 - 1,
 		.tm_mday = 16,
 		.tm_hour = 15,
-		.tm_min = 55,
+		.tm_min = 5,
 		.tm_sec = 0,
 	};
 
@@ -59,9 +59,7 @@ static int get_date_time(const struct device *rtc)
 		return ret;
 	}
 
-	set_time(tm.tm_hour, tm.tm_min);
-	set_date(tm.tm_mday, tm.tm_mon+1);
-	set_day_of_week(tm.tm_wday+1);
+	update_date_time(tm.tm_hour, tm.tm_min, tm.tm_mday, tm.tm_mon+1, tm.tm_year+1900, tm.tm_wday+1);
 
 	return ret;
 }

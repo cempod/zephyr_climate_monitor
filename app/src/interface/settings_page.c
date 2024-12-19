@@ -7,6 +7,8 @@ void set_settings_top_panel_theme(settings_top_panel_t * panel);
 void place_menu(menu_card_t * menu_card, lv_obj_t * parent);
 void set_menu_theme(menu_card_t * menu_card);
 
+static int current_hour, current_minute, current_day, current_month, current_year;
+
 static lv_obj_t * settings_screen;
 
 static settings_top_panel_t settings_top_panel = {
@@ -28,6 +30,7 @@ init_settings_page() {
     settings_screen = lv_obj_create(NULL);
     place_settings_top_panel(&settings_top_panel, settings_screen);
     place_menu(&menu_card, settings_screen);
+    update_settings_date_time(0, 0, 1, 1, 2024);
 }
 
 void
@@ -107,4 +110,13 @@ set_menu_theme(menu_card_t * menu_card) {
     lv_obj_set_style_border_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_font_color, LV_PART_ITEMS | LV_STATE_CHECKED);
     lv_obj_set_style_text_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_font_color, LV_PART_ITEMS | LV_STATE_CHECKED);
     lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_color, LV_PART_ITEMS | LV_STATE_CHECKED);
+}
+
+void
+update_settings_date_time(int hour, int minute, int day, int month, int year) {
+    current_hour = hour;
+    current_minute = minute;
+    current_day = day;
+    current_month = month;
+    current_year = year;
 }
