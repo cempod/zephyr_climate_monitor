@@ -37,7 +37,17 @@ typedef struct {
     lv_obj_t * year_roller;
     lv_obj_t * save_button;
     lv_obj_t * save_button_label;
-} date_time_page_t;
+} setup_date_page_t;
+
+typedef struct {
+    lv_obj_t * parent;
+    lv_obj_t * label;
+    lv_obj_t * day_roller;
+    lv_obj_t * hour_roller;
+    lv_obj_t * minute_roller;
+    lv_obj_t * save_button;
+    lv_obj_t * save_button_label;
+} setup_time_page_t;
 
 
 void init_settings_page(void);
