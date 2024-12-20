@@ -31,9 +31,12 @@ typedef struct {
 
 typedef struct {
     lv_obj_t * parent;
+    lv_obj_t * label;
     lv_obj_t * day_roller;
     lv_obj_t * month_roller;
     lv_obj_t * year_roller;
+    lv_obj_t * save_button;
+    lv_obj_t * save_button_label;
 } date_time_page_t;
 
 

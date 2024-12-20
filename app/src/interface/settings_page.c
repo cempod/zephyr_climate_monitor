@@ -2,6 +2,38 @@
 #include "colors/colors.h"
 #include "func.h"
 
+#ifndef SIMULATOR
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/rtc.h>
+
+const struct device *const rtc_device = DEVICE_DT_GET(DT_ALIAS(rtc));
+
+static uint8_t year_codes[] = {2,3,4,5,0,1};
+static uint8_t month_codes[] = {6,2,2,5,0,3,5,1,4,6,2,4};
+static uint8_t leap_month_codes[] = {5,1,2,5,0,3,5,1,4,6,2,4};
+
+static void setup_date(int day, int month, int year) {
+    struct rtc_time tm;
+    rtc_get_time(rtc_device, &tm);
+    tm.tm_year = year - 1900;
+    tm.tm_mon = month - 1;
+    tm.tm_mday = day;
+
+    if(year-2024==0 || year-2024==4) {
+        tm.tm_wday = ((day + leap_month_codes[month - 1] + year_codes[year-2024]) % 7)-1;
+    } else {
+        tm.tm_wday = ((day + month_codes[month - 1] + year_codes[year-2024]) % 7)-1;
+    }
+    
+    if(tm.tm_wday == -1) {
+        tm.tm_wday = 6;
+    }
+    rtc_set_time(rtc_device, &tm);
+}
+
+#endif
+
 void place_settings_top_panel(settings_top_panel_t * panel, lv_obj_t * parent);
 void set_settings_top_panel_theme(settings_top_panel_t * panel);
 void place_menu(menu_card_t * menu_card, lv_obj_t * parent);
@@ -15,6 +47,7 @@ const char * days_30 = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n1
 const char * days_29 = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29";
 const char * days_28 = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28";
 const char * months = "Январь\nФевраль\nМарт\nАпрель\nМай\nИюнь\nИюль\nАвгуст\nСентябрь\nОктябрь\nНоябрь\nДекабрь";
+const char * years = "2024\n2025\n2026\n2027\n2028\n2029";
 
 static int current_hour, current_minute, current_day, current_month, current_year;
 
@@ -49,6 +82,9 @@ load_settings_page() {
     lv_scr_load(settings_screen);
     lv_roller_set_selected(date_time_page.month_roller, current_month-1, LV_ANIM_ON);
     lv_roller_set_selected(date_time_page.day_roller, current_day-1, LV_ANIM_ON);
+    if(current_year-2024 >= 0 && current_year-2024 <= 5) {
+        lv_roller_set_selected(date_time_page.year_roller, current_year-2024, LV_ANIM_ON);
+    }
     change_roller_days();
 }
 
@@ -106,12 +142,14 @@ place_menu(menu_card_t * menu_card, lv_obj_t * parent) {
     lv_obj_set_size(menu_card->card, menu_card->x_size, menu_card->y_size);
     lv_obj_set_style_pad_all(menu_card->card,0,0);
     menu_card->tab_view = lv_tabview_create(menu_card->card, LV_DIR_LEFT, 80);
+    lv_obj_clear_flag(lv_tabview_get_content(menu_card->tab_view), LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_style_border_side(lv_tabview_get_tab_btns(menu_card->tab_view), LV_BORDER_SIDE_RIGHT, LV_PART_ITEMS | LV_STATE_CHECKED);
     lv_obj_set_style_text_font(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().main_font ,LV_PART_ITEMS);
-    lv_obj_t * date_time_tab = lv_tabview_add_tab(menu_card->tab_view, "Дата и время");
+    lv_obj_t * date_time_tab = lv_tabview_add_tab(menu_card->tab_view, "Дата");
     date_time_page.parent = date_time_tab;
     add_date_time_page(&date_time_page);
     
+    /*lv_obj_t * tab1 = */lv_tabview_add_tab(menu_card->tab_view, " Время");
     /*lv_obj_t * tab2 = */lv_tabview_add_tab(menu_card->tab_view, "Экран");
     set_menu_theme(menu_card);
 }
@@ -136,6 +174,15 @@ change_roller_days() {
     switch (lv_roller_get_selected(date_time_page.month_roller))
         {
         case 1:
+            if(lv_roller_get_selected(date_time_page.year_roller)==0 || lv_roller_get_selected(date_time_page.year_roller)==4) {
+                lv_roller_set_options(date_time_page.day_roller, days_29, LV_ROLLER_MODE_INFINITE);
+                if(selected_day<29) {
+                    lv_roller_set_selected(date_time_page.day_roller, selected_day, LV_ANIM_OFF);
+                } else {
+                    lv_roller_set_selected(date_time_page.day_roller, 28, LV_ANIM_ON);
+                }
+                break;
+            }
             lv_roller_set_options(date_time_page.day_roller, days_28, LV_ROLLER_MODE_INFINITE);
             if(selected_day<28) {
                 lv_roller_set_selected(date_time_page.day_roller, selected_day, LV_ANIM_OFF);
@@ -173,21 +220,51 @@ static void month_roller_event_handler(lv_event_t * e)
     }
 }
 
+static void date_save_button_event_handler(lv_event_t * e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+
+    if(code == LV_EVENT_CLICKED) {
+        #ifndef SIMULATOR
+        setup_date(lv_roller_get_selected(date_time_page.day_roller)+1, lv_roller_get_selected(date_time_page.month_roller)+1, lv_roller_get_selected(date_time_page.year_roller)+2024);
+        #endif
+    }
+}
+
 void
 add_date_time_page(date_time_page_t * page) {
     page->day_roller = lv_roller_create(page->parent);
-    lv_obj_align(page->day_roller, LV_ALIGN_TOP_LEFT, 5, 5);
+    lv_obj_align(page->day_roller, LV_ALIGN_CENTER, -105, 0);
     lv_obj_set_size(page->day_roller, 100, 100);
     lv_obj_set_style_text_font(page->day_roller, get_colors().main_font , 0);
     lv_roller_set_options(page->day_roller, days_30, LV_ROLLER_MODE_INFINITE);
     lv_roller_set_visible_row_count(page->day_roller, 3);
     page->month_roller = lv_roller_create(page->parent);
-    lv_obj_align(page->month_roller, LV_ALIGN_TOP_LEFT, 110, 5);
+    lv_obj_align(page->month_roller, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_size(page->month_roller, 100, 100);
     lv_obj_set_style_text_font(page->month_roller, get_colors().main_font , 0);
     lv_roller_set_options(page->month_roller, months, LV_ROLLER_MODE_INFINITE);
     lv_roller_set_visible_row_count(page->month_roller, 3);
     lv_obj_add_event_cb(page->month_roller, month_roller_event_handler, LV_EVENT_ALL, NULL);
+    page->year_roller = lv_roller_create(page->parent);
+    lv_obj_align(page->year_roller, LV_ALIGN_CENTER, 105, 0);
+    lv_obj_set_size(page->year_roller, 100, 100);
+    lv_obj_set_style_text_font(page->year_roller, get_colors().main_font , 0);
+    lv_roller_set_options(page->year_roller, years, LV_ROLLER_MODE_INFINITE);
+    lv_roller_set_visible_row_count(page->year_roller, 3);
+    lv_obj_add_event_cb(page->year_roller, month_roller_event_handler, LV_EVENT_ALL, NULL);
+    page->save_button = lv_btn_create(page->parent);
+    lv_obj_set_height(page->save_button, 40);
+    lv_obj_align(page->save_button, LV_ALIGN_BOTTOM_MID, 0, 0);
+    lv_obj_clear_state(page->save_button, LV_STATE_FOCUS_KEY);
+    lv_obj_set_style_shadow_opa(page->save_button, LV_OPA_TRANSP, 0);
+    page->save_button_label = place_label(0,0, page->save_button, get_colors().main_font);
+    set_label_text(page->save_button_label, "Сохранить");
+    lv_obj_add_event_cb(page->save_button, date_save_button_event_handler, LV_EVENT_CLICKED, NULL);
+    page->label = lv_label_create(page->parent);
+    lv_obj_align(page->label, LV_ALIGN_TOP_MID, 0, 7);
+    lv_obj_set_style_text_font(page->label, get_colors().main_font, 0);
+    set_label_text(page->label, "Установка даты");
     set_date_time_page_theme(page);
 }
 
@@ -201,6 +278,13 @@ set_date_time_page_theme(date_time_page_t * page) {
     lv_obj_set_style_text_color(page->day_roller, get_colors().header_font_color, 0);
     lv_obj_set_style_bg_color(page->day_roller, get_colors().header_color, LV_PART_SELECTED);
     lv_obj_set_style_border_color(page->day_roller, get_colors().border_color, 0);
+    lv_obj_set_style_bg_color(page->year_roller, get_colors().background_color, 0);
+    lv_obj_set_style_text_color(page->year_roller, get_colors().header_font_color, 0);
+    lv_obj_set_style_bg_color(page->year_roller, get_colors().header_color, LV_PART_SELECTED);
+    lv_obj_set_style_border_color(page->year_roller, get_colors().border_color, 0);
+    lv_obj_set_style_bg_color(page->save_button, get_colors().header_color, 0);
+    lv_obj_set_style_border_color(page->save_button, get_colors().header_color, 0);
+    lv_obj_set_style_text_color(page->label, get_colors().header_font_color, 0);
 }
 
 void
