@@ -38,6 +38,12 @@ static void setup_time(int hour, int minute) {
     tm.tm_hour = hour;
     tm.tm_min = minute;
     tm.tm_sec = 0;
+    if(tm.tm_wday < 0){
+        tm.tm_year = 2024 - 1900;
+        tm.tm_mon = 1 - 1;
+        tm.tm_mday = 1;
+        tm.tm_wday=0;
+    }
     rtc_set_time(rtc_device, &tm);
 }
 
