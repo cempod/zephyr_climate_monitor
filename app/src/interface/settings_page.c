@@ -57,6 +57,8 @@ void add_date_page(setup_date_page_t * page);
 void set_date_page_theme(setup_date_page_t * page);
 void add_time_page(setup_time_page_t * page);
 void set_time_page_theme(setup_time_page_t * page);
+void add_display_page(setup_display_page_t * page);
+void set_display_page_theme(setup_display_page_t * page);
 void change_roller_days(void);
 
 const char * hours = "00\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23";
@@ -88,6 +90,7 @@ menu_card_t menu_card = {
 
 static setup_date_page_t setup_date_page;
 static setup_time_page_t setup_time_page;
+static setup_display_page_t setup_display_page;
 
 void
 init_settings_page() {
@@ -167,15 +170,15 @@ place_menu(menu_card_t * menu_card, lv_obj_t * parent) {
     lv_obj_clear_flag(lv_tabview_get_content(menu_card->tab_view), LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_style_border_side(lv_tabview_get_tab_btns(menu_card->tab_view), LV_BORDER_SIDE_RIGHT, LV_PART_ITEMS | LV_STATE_CHECKED);
     lv_obj_set_style_text_font(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().main_font ,LV_PART_ITEMS);
+    lv_obj_t * setup_display_tab = lv_tabview_add_tab(menu_card->tab_view, "Экран");
+    setup_display_page.parent = setup_display_tab;
+    add_display_page(&setup_display_page);
     lv_obj_t * setup_time_tab = lv_tabview_add_tab(menu_card->tab_view, "Время");
     setup_time_page.parent = setup_time_tab;
     add_time_page(&setup_time_page);
     lv_obj_t * setup_date_tab = lv_tabview_add_tab(menu_card->tab_view, "Дата");
     setup_date_page.parent = setup_date_tab;
     add_date_page(&setup_date_page);
-    
-    /*lv_obj_t * tab1 = */
-    /*lv_obj_t * tab2 = */lv_tabview_add_tab(menu_card->tab_view, "Экран");
     set_menu_theme(menu_card);
 }
 
@@ -191,6 +194,7 @@ set_menu_theme(menu_card_t * menu_card) {
     lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_color, LV_PART_ITEMS | LV_STATE_CHECKED);
     set_date_page_theme(&setup_date_page);
     set_time_page_theme(&setup_time_page);
+    set_display_page_theme(&setup_display_page);
 }
 
 void
@@ -366,6 +370,26 @@ set_time_page_theme(setup_time_page_t * page) {
     lv_obj_set_style_bg_color(page->save_button, get_colors().header_color, 0);
     lv_obj_set_style_border_color(page->save_button, get_colors().header_color, 0);
     lv_obj_set_style_text_color(page->label, get_colors().header_font_color, 0);
+}
+
+void
+add_display_page(setup_display_page_t * page) {
+    page->brightness_slider_label = lv_label_create(page->parent);
+    lv_obj_align(page->brightness_slider_label, LV_ALIGN_TOP_LEFT, 5, 5);
+    lv_obj_set_style_text_font(page->brightness_slider_label, get_colors().main_font, 0);
+    set_label_text(page->brightness_slider_label, "Яркость");
+    page->brightness_slider = lv_slider_create(page->parent);
+    lv_obj_align(page->brightness_slider, LV_ALIGN_TOP_RIGHT, -5, 10);
+    lv_obj_set_width(page->brightness_slider, 250);
+    set_display_page_theme(page);
+}
+
+void
+set_display_page_theme(setup_display_page_t * page) {
+    lv_obj_set_style_text_color(page->brightness_slider_label, get_colors().header_font_color, 0);
+    lv_obj_set_style_bg_color(page->brightness_slider, get_colors().header_color, LV_PART_INDICATOR);
+    lv_obj_set_style_bg_color(page->brightness_slider, get_colors().header_color, LV_PART_KNOB);
+    lv_obj_set_style_bg_color(page->brightness_slider, get_colors().header_color, LV_PART_MAIN);
 }
 
 void

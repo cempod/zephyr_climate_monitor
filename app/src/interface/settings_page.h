@@ -49,6 +49,12 @@ typedef struct {
     lv_obj_t * save_button_label;
 } setup_time_page_t;
 
+typedef struct {
+    lv_obj_t * parent;
+    lv_obj_t * brightness_slider;
+    lv_obj_t * brightness_slider_label;
+} setup_display_page_t;
+
 
 void init_settings_page(void);
 void load_settings_page(void);
