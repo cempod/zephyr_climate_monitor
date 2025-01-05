@@ -381,6 +381,13 @@ add_display_page(setup_display_page_t * page) {
     page->brightness_slider = lv_slider_create(page->parent);
     lv_obj_align(page->brightness_slider, LV_ALIGN_TOP_RIGHT, -5, 10);
     lv_obj_set_width(page->brightness_slider, 250);
+    page->dark_theme_switch_label = lv_label_create(page->parent);
+    lv_obj_align(page->dark_theme_switch_label, LV_ALIGN_TOP_LEFT, 5, 50);
+    lv_obj_set_style_text_font(page->dark_theme_switch_label, get_colors().main_font, 0);
+    set_label_text(page->dark_theme_switch_label, "Тёмная тема");
+    page->dark_theme_switch = lv_switch_create(page->parent);
+    lv_obj_align(page->dark_theme_switch, LV_ALIGN_TOP_RIGHT, -5, 45);
+    // lv_obj_add_event_cb(sw, event_handler, LV_EVENT_ALL, NULL);
     set_display_page_theme(page);
 }
 
@@ -390,6 +397,14 @@ set_display_page_theme(setup_display_page_t * page) {
     lv_obj_set_style_bg_color(page->brightness_slider, get_colors().header_color, LV_PART_INDICATOR);
     lv_obj_set_style_bg_color(page->brightness_slider, get_colors().header_color, LV_PART_KNOB);
     lv_obj_set_style_bg_color(page->brightness_slider, get_colors().header_color, LV_PART_MAIN);
+    lv_obj_set_style_text_color(page->dark_theme_switch_label, get_colors().header_font_color, 0);
+    lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().header_color, LV_PART_KNOB);
+    lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().header_font_color, LV_PART_KNOB | LV_STATE_CHECKED);
+    lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().header_color, LV_PART_INDICATOR | LV_STATE_CHECKED);
+    lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().background_color, LV_PART_MAIN);
+    lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().header_color, LV_PART_MAIN | LV_STATE_CHECKED);
+    lv_obj_set_style_border_color(page->dark_theme_switch, get_colors().border_color, 0);
+    lv_obj_set_style_border_width(page->dark_theme_switch, 2, 0);
 }
 
 void
