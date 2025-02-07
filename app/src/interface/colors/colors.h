@@ -9,17 +9,14 @@
 
 enum Themes {
     LIGHT_THEME = 0,
-    DARK_THEME,
-    CUSTOM_THEME //TODO
+    DARK_THEME
 };
 
 typedef struct {
+    lv_color_t accent_color;
+    lv_color_t on_accent_color;
     lv_color_t background_color;
-    lv_color_t card_background_color;
-    lv_color_t header_color;
-    lv_color_t main_font_color;
-    lv_color_t header_font_color;
-    lv_color_t border_color;
+    lv_color_t on_background_color;
     const lv_font_t * main_font;
     const lv_font_t * big_font;
     const lv_font_t * medium_font;

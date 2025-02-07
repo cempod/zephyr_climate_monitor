@@ -106,12 +106,12 @@ place_card(card_t * card, lv_obj_t * parent) {
 
 void
 set_card_theme(card_t * card) {
-    lv_obj_set_style_bg_color(card->card, get_colors().card_background_color, 0);
-    lv_obj_set_style_border_color(card->card, get_colors().border_color, 0);
-    lv_obj_set_style_bg_color(card->header, get_colors().header_color, 0);
-    lv_obj_set_style_bg_color (card->header , get_colors().header_color, 0);
-    lv_obj_set_style_text_color(card->label, get_colors().main_font_color, 0);
-    lv_obj_set_style_text_color(card->header_label, get_colors().header_font_color, 0);
+    lv_obj_set_style_bg_color(card->card, get_colors().background_color, 0);
+    lv_obj_set_style_border_color(card->card, get_colors().accent_color, 0);
+    lv_obj_set_style_bg_color(card->header, get_colors().accent_color, 0);
+    lv_obj_set_style_bg_color (card->header , get_colors().accent_color, 0);
+    lv_obj_set_style_text_color(card->label, get_colors().accent_color, 0);
+    lv_obj_set_style_text_color(card->header_label, get_colors().on_accent_color, 0);
 }
 
 void 
@@ -128,11 +128,11 @@ place_datetime_card(datetime_card_t * card, lv_obj_t * parent) {
 
 void
 set_datetime_card_theme(datetime_card_t * card) {
-    lv_obj_set_style_bg_color(card->card, get_colors().card_background_color, 0);
-    lv_obj_set_style_border_color(card->card, get_colors().border_color, 0);
-    lv_obj_set_style_text_color(card->date_top_label, get_colors().main_font_color, 0);
-    lv_obj_set_style_text_color(card->date_bottom_label, get_colors().main_font_color, 0);
-    lv_obj_set_style_text_color(card->time_label, get_colors().main_font_color, 0);
+    lv_obj_set_style_bg_color(card->card, get_colors().background_color, 0);
+    lv_obj_set_style_border_color(card->card, get_colors().accent_color, 0);
+    lv_obj_set_style_text_color(card->date_top_label, get_colors().accent_color, 0);
+    lv_obj_set_style_text_color(card->date_bottom_label, get_colors().accent_color, 0);
+    lv_obj_set_style_text_color(card->time_label, get_colors().accent_color, 0);
 }
 
 static void settings_button_event_handler(lv_event_t * e)
@@ -170,13 +170,13 @@ place_top_panel(top_panel_t * panel, lv_obj_t * parent) {
 
 void
 set_top_panel_theme(top_panel_t * panel) {
-    lv_obj_set_style_bg_color(panel->card, get_colors().header_color, 0);
-    lv_obj_set_style_border_color(panel->card, get_colors().border_color, 0);
-    lv_obj_set_style_bg_color(panel->tile_view, get_colors().header_color, 0);
-    lv_obj_set_style_bg_color(panel->settings_button, get_colors().header_color, 0);
-    lv_obj_set_style_border_color(panel->settings_button, get_colors().header_font_color, 0);
-    lv_obj_set_style_text_color(panel->status_label, get_colors().header_font_color, 0);
-    lv_obj_set_style_text_color(panel->settings_button_label, get_colors().header_font_color, 0);
+    lv_obj_set_style_bg_color(panel->card, get_colors().accent_color, 0);
+    lv_obj_set_style_border_color(panel->card, get_colors().accent_color, 0);
+    lv_obj_set_style_bg_color(panel->tile_view, get_colors().accent_color, 0);
+    lv_obj_set_style_bg_color(panel->settings_button, get_colors().accent_color, 0);
+    lv_obj_set_style_border_color(panel->settings_button, get_colors().on_accent_color, 0);
+    lv_obj_set_style_text_color(panel->status_label, get_colors().on_accent_color, 0);
+    lv_obj_set_style_text_color(panel->settings_button_label, get_colors().on_accent_color, 0);
 }
 
 void

@@ -67,7 +67,7 @@ int main(void)
 		return 0;
 	}
 	init_interface();
-	set_theme(DARK_THEME);
+	//set_theme(DARK_THEME);
 
 	load_main_page();
 

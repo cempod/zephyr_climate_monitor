@@ -152,12 +152,12 @@ place_settings_top_panel(settings_top_panel_t * panel, lv_obj_t * parent) {
 
 void
 set_settings_top_panel_theme(settings_top_panel_t * panel) {
-    lv_obj_set_style_bg_color(panel->card, get_colors().header_color, 0);
-    lv_obj_set_style_border_color(panel->card, get_colors().border_color, 0);
-    lv_obj_set_style_bg_color(panel->back_button, get_colors().header_color, 0);
-    lv_obj_set_style_border_color(panel->back_button, get_colors().header_font_color, 0);
-    lv_obj_set_style_text_color(panel->panel_label, get_colors().header_font_color, 0);
-    lv_obj_set_style_text_color(panel->back_button_label, get_colors().header_font_color, 0);
+    lv_obj_set_style_bg_color(panel->card, get_colors().accent_color, 0);
+    lv_obj_set_style_border_color(panel->card, get_colors().accent_color, 0);
+    lv_obj_set_style_bg_color(panel->back_button, get_colors().accent_color, 0);
+    lv_obj_set_style_border_color(panel->back_button, get_colors().on_accent_color, 0);
+    lv_obj_set_style_text_color(panel->panel_label, get_colors().on_accent_color, 0);
+    lv_obj_set_style_text_color(panel->back_button_label, get_colors().on_accent_color, 0);
 }
 
 void
@@ -185,13 +185,13 @@ place_menu(menu_card_t * menu_card, lv_obj_t * parent) {
 void
 set_menu_theme(menu_card_t * menu_card) {
     lv_obj_set_style_bg_color(menu_card->card, get_colors().background_color, 0);
-    lv_obj_set_style_border_color(menu_card->card, get_colors().border_color, 0);
+    lv_obj_set_style_border_color(menu_card->card, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(menu_card->tab_view, get_colors().background_color, 0);
-    lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_color, 0);
-    lv_obj_set_style_text_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_font_color, 0);
-    lv_obj_set_style_border_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_font_color, LV_PART_ITEMS | LV_STATE_CHECKED);
-    lv_obj_set_style_text_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_font_color, LV_PART_ITEMS | LV_STATE_CHECKED);
-    lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().header_color, LV_PART_ITEMS | LV_STATE_CHECKED);
+    lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().accent_color, 0);
+    lv_obj_set_style_text_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().on_accent_color, 0);
+    lv_obj_set_style_border_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().background_color, LV_PART_ITEMS | LV_STATE_CHECKED);
+    lv_obj_set_style_text_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().on_accent_color, LV_PART_ITEMS | LV_STATE_CHECKED);
+    lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(menu_card->tab_view), get_colors().accent_color, LV_PART_ITEMS | LV_STATE_CHECKED);
     set_date_page_theme(&setup_date_page);
     set_time_page_theme(&setup_time_page);
     set_display_page_theme(&setup_display_page);
@@ -301,20 +301,20 @@ add_date_page(setup_date_page_t * page) {
 void
 set_date_page_theme(setup_date_page_t * page) {
     lv_obj_set_style_bg_color(page->month_roller, get_colors().background_color, 0);
-    lv_obj_set_style_text_color(page->month_roller, get_colors().header_font_color, 0);
-    lv_obj_set_style_bg_color(page->month_roller, get_colors().header_color, LV_PART_SELECTED);
-    lv_obj_set_style_border_color(page->month_roller, get_colors().border_color, 0);
+    lv_obj_set_style_text_color(page->month_roller, get_colors().on_background_color, 0);
+    lv_obj_set_style_bg_color(page->month_roller, get_colors().accent_color, LV_PART_SELECTED);
+    lv_obj_set_style_border_color(page->month_roller, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(page->day_roller, get_colors().background_color, 0);
-    lv_obj_set_style_text_color(page->day_roller, get_colors().header_font_color, 0);
-    lv_obj_set_style_bg_color(page->day_roller, get_colors().header_color, LV_PART_SELECTED);
-    lv_obj_set_style_border_color(page->day_roller, get_colors().border_color, 0);
+    lv_obj_set_style_text_color(page->day_roller, get_colors().on_background_color, 0);
+    lv_obj_set_style_bg_color(page->day_roller, get_colors().accent_color, LV_PART_SELECTED);
+    lv_obj_set_style_border_color(page->day_roller, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(page->year_roller, get_colors().background_color, 0);
-    lv_obj_set_style_text_color(page->year_roller, get_colors().header_font_color, 0);
-    lv_obj_set_style_bg_color(page->year_roller, get_colors().header_color, LV_PART_SELECTED);
-    lv_obj_set_style_border_color(page->year_roller, get_colors().border_color, 0);
-    lv_obj_set_style_bg_color(page->save_button, get_colors().header_color, 0);
-    lv_obj_set_style_border_color(page->save_button, get_colors().header_color, 0);
-    lv_obj_set_style_text_color(page->label, get_colors().header_font_color, 0);
+    lv_obj_set_style_text_color(page->year_roller, get_colors().on_background_color, 0);
+    lv_obj_set_style_bg_color(page->year_roller, get_colors().accent_color, LV_PART_SELECTED);
+    lv_obj_set_style_border_color(page->year_roller, get_colors().accent_color, 0);
+    lv_obj_set_style_bg_color(page->save_button, get_colors().accent_color, 0);
+    lv_obj_set_style_border_color(page->save_button, get_colors(). accent_color, 0);
+    lv_obj_set_style_text_color(page->label, get_colors().on_background_color, 0);
 }
 
 static void time_save_button_event_handler(lv_event_t * e)
@@ -360,16 +360,30 @@ add_time_page(setup_time_page_t * page) {
 void
 set_time_page_theme(setup_time_page_t * page) {
     lv_obj_set_style_bg_color(page->hour_roller, get_colors().background_color, 0);
-    lv_obj_set_style_text_color(page->hour_roller, get_colors().header_font_color, 0);
-    lv_obj_set_style_bg_color(page->hour_roller, get_colors().header_color, LV_PART_SELECTED);
-    lv_obj_set_style_border_color(page->hour_roller, get_colors().border_color, 0);
+    lv_obj_set_style_text_color(page->hour_roller, get_colors().on_background_color, 0);
+    lv_obj_set_style_bg_color(page->hour_roller, get_colors().accent_color, LV_PART_SELECTED);
+    lv_obj_set_style_border_color(page->hour_roller, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(page->minute_roller, get_colors().background_color, 0);
-    lv_obj_set_style_text_color(page->minute_roller, get_colors().header_font_color, 0);
-    lv_obj_set_style_bg_color(page->minute_roller, get_colors().header_color, LV_PART_SELECTED);
-    lv_obj_set_style_border_color(page->minute_roller, get_colors().border_color, 0);
-    lv_obj_set_style_bg_color(page->save_button, get_colors().header_color, 0);
-    lv_obj_set_style_border_color(page->save_button, get_colors().header_color, 0);
-    lv_obj_set_style_text_color(page->label, get_colors().header_font_color, 0);
+    lv_obj_set_style_text_color(page->minute_roller, get_colors().on_background_color, 0);
+    lv_obj_set_style_bg_color(page->minute_roller, get_colors().accent_color, LV_PART_SELECTED);
+    lv_obj_set_style_border_color(page->minute_roller, get_colors().accent_color, 0);
+    lv_obj_set_style_bg_color(page->save_button, get_colors().accent_color, 0);
+    lv_obj_set_style_border_color(page->save_button, get_colors().accent_color, 0);
+    lv_obj_set_style_text_color(page->label, get_colors().on_background_color, 0);
+}
+
+
+static void dark_theme_event_handler(lv_event_t * e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * obj = lv_event_get_target(e);
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        if (lv_obj_has_state(obj, LV_STATE_CHECKED)) {
+            set_theme(DARK_THEME);
+        } else {
+            set_theme(LIGHT_THEME);
+        }
+    }
 }
 
 void
@@ -387,23 +401,23 @@ add_display_page(setup_display_page_t * page) {
     set_label_text(page->dark_theme_switch_label, "Тёмная тема");
     page->dark_theme_switch = lv_switch_create(page->parent);
     lv_obj_align(page->dark_theme_switch, LV_ALIGN_TOP_RIGHT, -5, 45);
-    // lv_obj_add_event_cb(sw, event_handler, LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(page->dark_theme_switch, dark_theme_event_handler, LV_EVENT_ALL, NULL);
     set_display_page_theme(page);
 }
 
 void
 set_display_page_theme(setup_display_page_t * page) {
-    lv_obj_set_style_text_color(page->brightness_slider_label, get_colors().header_font_color, 0);
-    lv_obj_set_style_bg_color(page->brightness_slider, get_colors().header_color, LV_PART_INDICATOR);
-    lv_obj_set_style_bg_color(page->brightness_slider, get_colors().header_color, LV_PART_KNOB);
-    lv_obj_set_style_bg_color(page->brightness_slider, get_colors().header_color, LV_PART_MAIN);
-    lv_obj_set_style_text_color(page->dark_theme_switch_label, get_colors().header_font_color, 0);
-    lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().header_color, LV_PART_KNOB);
-    lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().header_font_color, LV_PART_KNOB | LV_STATE_CHECKED);
-    lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().header_color, LV_PART_INDICATOR | LV_STATE_CHECKED);
+    lv_obj_set_style_text_color(page->brightness_slider_label, get_colors().accent_color, 0);
+    lv_obj_set_style_bg_color(page->brightness_slider, get_colors().accent_color, LV_PART_INDICATOR);
+    lv_obj_set_style_bg_color(page->brightness_slider, get_colors(). accent_color, LV_PART_KNOB);
+    lv_obj_set_style_bg_color(page->brightness_slider, get_colors().accent_color, LV_PART_MAIN);
+    lv_obj_set_style_text_color(page->dark_theme_switch_label, get_colors().accent_color, 0);
+    lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().accent_color, LV_PART_KNOB);
+    lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().on_accent_color, LV_PART_KNOB | LV_STATE_CHECKED);
+    lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().accent_color, LV_PART_INDICATOR | LV_STATE_CHECKED);
     lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().background_color, LV_PART_MAIN);
-    lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().header_color, LV_PART_MAIN | LV_STATE_CHECKED);
-    lv_obj_set_style_border_color(page->dark_theme_switch, get_colors().border_color, 0);
+    lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().accent_color, LV_PART_MAIN | LV_STATE_CHECKED);
+    lv_obj_set_style_border_color(page->dark_theme_switch, get_colors().accent_color, 0);
     lv_obj_set_style_border_width(page->dark_theme_switch, 2, 0);
 }
 
