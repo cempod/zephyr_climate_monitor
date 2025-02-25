@@ -55,6 +55,8 @@ typedef struct {
     lv_obj_t * brightness_slider_label;
     lv_obj_t * dark_theme_switch;
     lv_obj_t * dark_theme_switch_label;
+    lv_obj_t * color_buttons;
+    lv_obj_t * color_buttons_label;
 } setup_display_page_t;
 
 

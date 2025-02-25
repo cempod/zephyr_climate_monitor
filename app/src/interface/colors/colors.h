@@ -12,6 +12,21 @@ enum Themes {
     DARK_THEME
 };
 
+enum AccentColors {
+    ACCENT_RED_DARK = 0,
+    ACCENT_RED,
+    ACCENT_ORANGE,
+    ACCENT_GREEN,
+    ACCENT_GREEN_SOFT,
+    ACCENT_CYAN,
+    ACCENT_CYAN_DARK,
+    ACCENT_BLUE,
+    ACCENT_PURPLE,
+    ACCENT_PURPLE_DARK,
+    ACCENT_MAGENTA,
+    ACCENT_GREY
+};
+
 typedef struct {
     lv_color_t accent_color;
     lv_color_t on_accent_color;
@@ -23,6 +38,9 @@ typedef struct {
 } ui_style_t;
 
 ui_style_t get_colors();
+lv_color_t get_accent_color(uint8_t color);
+uint8_t get_current_theme(void);
 void set_colors(int theme);
+void set_accent_color(uint8_t color);
 
 #endif

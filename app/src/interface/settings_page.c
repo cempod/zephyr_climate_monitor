@@ -386,8 +386,28 @@ static void dark_theme_event_handler(lv_event_t * e)
     }
 }
 
+static void
+color_buttons_cb(lv_event_t * e) {
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * obj = lv_event_get_target(e);
+    if(code == LV_EVENT_DRAW_PART_BEGIN) {
+        lv_obj_draw_part_dsc_t * dsc = lv_event_get_draw_part_dsc(e);
+        if(dsc->class_p == &lv_btnmatrix_class && dsc->type == LV_BTNMATRIX_DRAW_PART_BTN) {
+            dsc->rect_dsc->bg_color = get_accent_color(dsc->id);
+        }
+    }
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        uint32_t id = lv_btnmatrix_get_selected_btn(obj);
+        set_accent_color(id);
+        set_theme(get_current_theme());
+    }
+}
+
 void
 add_display_page(setup_display_page_t * page) {
+    lv_obj_clear_flag(page->parent, LV_OBJ_FLAG_SCROLLABLE);
+    static const char * btnm_map[] = {" ", " ", " ", " ", " ", " ", "\n",
+                                  " ", " ", " ", " ", " ", " ",  ""};
     page->brightness_slider_label = lv_label_create(page->parent);
     lv_obj_align(page->brightness_slider_label, LV_ALIGN_TOP_LEFT, 5, 5);
     lv_obj_set_style_text_font(page->brightness_slider_label, get_colors().main_font, 0);
@@ -402,6 +422,21 @@ add_display_page(setup_display_page_t * page) {
     page->dark_theme_switch = lv_switch_create(page->parent);
     lv_obj_align(page->dark_theme_switch, LV_ALIGN_TOP_RIGHT, -5, 45);
     lv_obj_add_event_cb(page->dark_theme_switch, dark_theme_event_handler, LV_EVENT_ALL, NULL);
+    page->color_buttons_label = lv_label_create(page->parent);
+    lv_obj_align(page->color_buttons_label, LV_ALIGN_TOP_LEFT, 5, 95);
+    lv_obj_set_style_text_font(page->color_buttons_label, get_colors().main_font, 0);
+    set_label_text(page->color_buttons_label, "Цвет интерфейса");
+    page->color_buttons = lv_btnmatrix_create(page->parent);
+    lv_btnmatrix_set_map(page->color_buttons, btnm_map);
+    lv_obj_align(page->color_buttons, LV_ALIGN_BOTTOM_LEFT, -5, 5);
+    lv_obj_set_width(page->color_buttons, 365);
+    lv_obj_set_height(page->color_buttons, 100);
+    lv_obj_set_style_pad_top(page->color_buttons, 9, 0);
+    lv_obj_set_style_pad_left(page->color_buttons, 9, 0);
+    lv_obj_set_style_pad_bottom(page->color_buttons, 5, 0);
+    lv_obj_set_style_pad_right(page->color_buttons, 5, 0);
+    lv_obj_set_style_radius(page->color_buttons, 0, LV_PART_ITEMS);
+    lv_obj_add_event_cb(page->color_buttons, color_buttons_cb, LV_EVENT_ALL, NULL);
     set_display_page_theme(page);
 }
 
@@ -419,6 +454,10 @@ set_display_page_theme(setup_display_page_t * page) {
     lv_obj_set_style_bg_color(page->dark_theme_switch, get_colors().accent_color, LV_PART_MAIN | LV_STATE_CHECKED);
     lv_obj_set_style_border_color(page->dark_theme_switch, get_colors().accent_color, 0);
     lv_obj_set_style_border_width(page->dark_theme_switch, 2, 0);
+    lv_obj_set_style_text_color(page->color_buttons_label, get_colors().accent_color, 0);
+    lv_obj_set_style_bg_color(page->color_buttons, get_colors().background_color, LV_PART_MAIN);
+    lv_obj_set_style_border_color(page->color_buttons, get_colors().accent_color, 0);
+    lv_obj_set_style_shadow_width(page->color_buttons, 0, LV_PART_ITEMS);
 }
 
 void
