@@ -301,20 +301,20 @@ add_date_page(setup_date_page_t * page) {
 void
 set_date_page_theme(setup_date_page_t * page) {
     lv_obj_set_style_bg_color(page->month_roller, get_colors().background_color, 0);
-    lv_obj_set_style_text_color(page->month_roller, get_colors().on_background_color, 0);
+    lv_obj_set_style_text_color(page->month_roller, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(page->month_roller, get_colors().accent_color, LV_PART_SELECTED);
     lv_obj_set_style_border_color(page->month_roller, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(page->day_roller, get_colors().background_color, 0);
-    lv_obj_set_style_text_color(page->day_roller, get_colors().on_background_color, 0);
+    lv_obj_set_style_text_color(page->day_roller, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(page->day_roller, get_colors().accent_color, LV_PART_SELECTED);
     lv_obj_set_style_border_color(page->day_roller, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(page->year_roller, get_colors().background_color, 0);
-    lv_obj_set_style_text_color(page->year_roller, get_colors().on_background_color, 0);
+    lv_obj_set_style_text_color(page->year_roller, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(page->year_roller, get_colors().accent_color, LV_PART_SELECTED);
     lv_obj_set_style_border_color(page->year_roller, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(page->save_button, get_colors().accent_color, 0);
     lv_obj_set_style_border_color(page->save_button, get_colors(). accent_color, 0);
-    lv_obj_set_style_text_color(page->label, get_colors().on_background_color, 0);
+    lv_obj_set_style_text_color(page->label, get_colors().accent_color, 0);
 }
 
 static void time_save_button_event_handler(lv_event_t * e)
@@ -360,16 +360,16 @@ add_time_page(setup_time_page_t * page) {
 void
 set_time_page_theme(setup_time_page_t * page) {
     lv_obj_set_style_bg_color(page->hour_roller, get_colors().background_color, 0);
-    lv_obj_set_style_text_color(page->hour_roller, get_colors().on_background_color, 0);
+    lv_obj_set_style_text_color(page->hour_roller, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(page->hour_roller, get_colors().accent_color, LV_PART_SELECTED);
     lv_obj_set_style_border_color(page->hour_roller, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(page->minute_roller, get_colors().background_color, 0);
-    lv_obj_set_style_text_color(page->minute_roller, get_colors().on_background_color, 0);
+    lv_obj_set_style_text_color(page->minute_roller, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(page->minute_roller, get_colors().accent_color, LV_PART_SELECTED);
     lv_obj_set_style_border_color(page->minute_roller, get_colors().accent_color, 0);
     lv_obj_set_style_bg_color(page->save_button, get_colors().accent_color, 0);
     lv_obj_set_style_border_color(page->save_button, get_colors().accent_color, 0);
-    lv_obj_set_style_text_color(page->label, get_colors().on_background_color, 0);
+    lv_obj_set_style_text_color(page->label, get_colors().accent_color, 0);
 }
 
 
