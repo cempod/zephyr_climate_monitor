@@ -12,9 +12,9 @@
 	};
 
     backlight_leds: backlight_leds {
-		compatible = "gpio-leds";
+		compatible = "pwm-leds";
 		display_back_led: display_back_led_0 {
-			gpios = <&gpioa 1 GPIO_ACTIVE_HIGH>;
+			pwms = <&pwm2 2 PWM_MSEC(5) PWM_POLARITY_NORMAL>;
 			label = "display backlight";
 		};
 	};
@@ -81,4 +81,15 @@
 &rtc {
 	clocks = <&rcc STM32_CLOCK_BUS_APB4 0x00010000>,
 		 <&rcc STM32_SRC_LSE RTC_SEL(1)>;
+};
+
+&timers2 {
+	st,prescaler = <10000>;
+	status = "okay";
+
+	pwm2: pwm {
+	pinctrl-0 = <&tim2_ch2_pa1>;
+		pinctrl-names = "default";
+		status = "okay";
+	};
 };

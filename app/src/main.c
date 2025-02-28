@@ -13,7 +13,6 @@
 #include <string.h>
 #include <zephyr/kernel.h>
 #include <lvgl_input_device.h>
-#include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/drivers/rtc.h>
 #include <zephyr/sys/util.h>
@@ -26,9 +25,7 @@ LOG_MODULE_REGISTER(app);
 
 const struct device *const rtc = DEVICE_DT_GET(DT_ALIAS(rtc));
 
-#define DISPLAY_LED_NODE DT_ALIAS(backlight0)
 
-static const struct gpio_dt_spec display_led = GPIO_DT_SPEC_GET(DISPLAY_LED_NODE, gpios);
 
 static int get_date_time(const struct device *rtc)
 {
@@ -51,13 +48,7 @@ int main(void)
 		return 0;
 	}
 
-	if (!gpio_is_ready_dt(&display_led)) {
-		return 0;
-	}
-	int ret = gpio_pin_configure_dt(&display_led, GPIO_OUTPUT_ACTIVE);
-	if (ret < 0) {
-		return 0;
-	}
+
 
 	const struct device *display_dev;
 
@@ -73,11 +64,6 @@ int main(void)
 
 	lv_task_handler();
 	display_blanking_off(display_dev);
-
-	ret = gpio_pin_set_dt(&display_led, 1);
-		if (ret < 0) {
-			return 0;
-		}
 
 	while (1) {
 		get_date_time(rtc);

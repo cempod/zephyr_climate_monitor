@@ -6,6 +6,7 @@
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/rtc.h>
+#include "backlight.h"
 
 const struct device *const rtc_device = DEVICE_DT_GET(DT_ALIAS(rtc));
 
@@ -403,6 +404,14 @@ color_buttons_cb(lv_event_t * e) {
     }
 }
 
+static void slider_event_cb(lv_event_t * e)
+{
+    lv_obj_t * slider = lv_event_get_target(e);
+    #ifndef SIMULATOR
+        set_brightness(lv_slider_get_value(slider));
+    #endif
+}
+
 void
 add_display_page(setup_display_page_t * page) {
     lv_obj_clear_flag(page->parent, LV_OBJ_FLAG_SCROLLABLE);
@@ -413,8 +422,11 @@ add_display_page(setup_display_page_t * page) {
     lv_obj_set_style_text_font(page->brightness_slider_label, get_colors().main_font, 0);
     set_label_text(page->brightness_slider_label, "Яркость");
     page->brightness_slider = lv_slider_create(page->parent);
+    lv_slider_set_range(page->brightness_slider, 10, 100);
+    lv_slider_set_value(page->brightness_slider, 100, LV_ANIM_OFF);
     lv_obj_align(page->brightness_slider, LV_ALIGN_TOP_RIGHT, -5, 10);
     lv_obj_set_width(page->brightness_slider, 250);
+    lv_obj_add_event_cb(page->brightness_slider, slider_event_cb, LV_EVENT_VALUE_CHANGED, NULL);
     page->dark_theme_switch_label = lv_label_create(page->parent);
     lv_obj_align(page->dark_theme_switch_label, LV_ALIGN_TOP_LEFT, 5, 50);
     lv_obj_set_style_text_font(page->dark_theme_switch_label, get_colors().main_font, 0);
