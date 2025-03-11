@@ -59,6 +59,11 @@ typedef struct {
     lv_obj_t * color_buttons_label;
 } setup_display_page_t;
 
+typedef struct {
+    lv_obj_t * parent;
+    lv_obj_t * about_label;
+} about_page_t;
+
 
 void init_settings_page(void);
 void load_settings_page(void);

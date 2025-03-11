@@ -2,6 +2,8 @@
 #include "colors/colors.h"
 #include "func.h"
 
+LV_FONT_DECLARE(askii_art)
+
 #ifndef SIMULATOR
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
@@ -60,6 +62,8 @@ void add_time_page(setup_time_page_t * page);
 void set_time_page_theme(setup_time_page_t * page);
 void add_display_page(setup_display_page_t * page);
 void set_display_page_theme(setup_display_page_t * page);
+void add_about_page(about_page_t * page);
+void set_about_page_theme(about_page_t * page);
 void change_roller_days(void);
 
 const char * hours = "00\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23";
@@ -92,6 +96,7 @@ menu_card_t menu_card = {
 static setup_date_page_t setup_date_page;
 static setup_time_page_t setup_time_page;
 static setup_display_page_t setup_display_page;
+static about_page_t about_page;
 
 void
 init_settings_page() {
@@ -180,6 +185,9 @@ place_menu(menu_card_t * menu_card, lv_obj_t * parent) {
     lv_obj_t * setup_date_tab = lv_tabview_add_tab(menu_card->tab_view, "Дата");
     setup_date_page.parent = setup_date_tab;
     add_date_page(&setup_date_page);
+    lv_obj_t * about_tab = lv_tabview_add_tab(menu_card->tab_view, " Инфо");
+    about_page.parent = about_tab;
+    add_about_page(&about_page);
     set_menu_theme(menu_card);
 }
 
@@ -196,6 +204,7 @@ set_menu_theme(menu_card_t * menu_card) {
     set_date_page_theme(&setup_date_page);
     set_time_page_theme(&setup_time_page);
     set_display_page_theme(&setup_display_page);
+    set_about_page_theme(&about_page);
 }
 
 void
@@ -470,6 +479,30 @@ set_display_page_theme(setup_display_page_t * page) {
     lv_obj_set_style_bg_color(page->color_buttons, get_colors().background_color, LV_PART_MAIN);
     lv_obj_set_style_border_color(page->color_buttons, get_colors().accent_color, 0);
     lv_obj_set_style_shadow_width(page->color_buttons, 0, LV_PART_ITEMS);
+}
+
+void
+add_about_page(about_page_t * page) {
+    page->about_label = lv_label_create(page->parent);
+    lv_obj_align(page->about_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_size(page->about_label, 300, 200);
+    lv_obj_set_style_text_font(page->about_label, &askii_art, 0);
+    lv_label_set_text(page->about_label, "\n\n\
+    +---------------------------------------+\n\
+    |  ____                               _ |\n\
+    | / ___|___ _ __ ___  _ __   ___   __| ||\n\
+    || |   / _ \\ '_ ` _ \\| '_ \\ / _ \\ / _` ||\n\
+    || |__|  __/ | | | | | |_) | (_) | (_| ||\n\
+    | \\____\\___|_| |_| |_| .__/ \\___/ \\__,_||\n\
+    |                    |_|                |\n\
+    +---------------------------------------+\n\
+");
+    set_about_page_theme(page);
+}
+
+void
+set_about_page_theme(about_page_t * page) {
+    lv_obj_set_style_text_color(page->about_label, get_colors().accent_color, 0);
 }
 
 void
