@@ -1,8 +1,12 @@
 #include <zephyr/dt-bindings/mipi_dbi/mipi_dbi.h>
+#include <zephyr/dt-bindings/pwm/pwm.h>
+#include "espressif/esp32s3/esp32s3_wroom_n16r8.dtsi"
 
 / {
 	chosen {
 		zephyr,display = &st7796s_320x480;
+		zephyr,console = &uart0;
+		zephyr,shell-uart = &uart0;
 	};
 
 	lvgl_pointer {
@@ -14,7 +18,7 @@
     backlight_leds: backlight_leds {
 		compatible = "pwm-leds";
 		display_back_led: display_back_led_0 {
-			pwms = <&pwm2 2 PWM_MSEC(5) PWM_POLARITY_NORMAL>;
+			pwms = <&ledc0 0 PWM_MSEC(5) PWM_POLARITY_NORMAL>;
 			label = "display backlight";
 		};
 	};
@@ -22,13 +26,14 @@
     aliases {
 		backlight0 = &display_back_led;
 		rtc = &rtc;
+		uart-0 = &uart0;
 	};
 
 	mipi_dbi_st7796s_320x480 {
 		compatible = "zephyr,mipi-dbi-spi";
 		spi-dev = <&spi2>;
-		dc-gpios = <&gpioa 2 GPIO_ACTIVE_HIGH>;	/* D9 */
-		reset-gpios = <&gpioa 3 GPIO_ACTIVE_LOW>;	/* D8 */
+		dc-gpios = <&gpio0 9 GPIO_ACTIVE_HIGH>;	/* 9 */
+		reset-gpios = <&gpio0 14 GPIO_ACTIVE_LOW>;	/* 14 */
 		write-only;
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -52,44 +57,56 @@
 	};
 };
 
-&dma1 {
+&uart0 {
 	status = "okay";
-};
-&dmamux1{
-	status = "okay";
+	current-speed = <115200>;
+	pinctrl-0 = <&uart0_default>;
+	pinctrl-names = "default";
 };
 
 &spi2 {
 	status = "okay";
-	pinctrl-0 = <&spi2_sck_pb13 &spi2_miso_pb14 &spi2_mosi_pb15>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+	pinctrl-0 = <&spim2_default>;
 	pinctrl-names = "default";
-	cs-gpios = <&gpiob 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-	dmas = <&dmamux1 0 40 STM32_DMA_PERIPH_TX
-		&dmamux1 1 39 STM32_DMA_PERIPH_RX>;
-	dma-names = "tx", "rx";
+	cs-gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;
 };
 
 &i2c1 {
-	pinctrl-0 = <&i2c1_scl_pb6 &i2c1_sda_pb7>;
+	status = "okay";
+	clock-frequency = <I2C_BITRATE_STANDARD>;
+	pinctrl-0 = <&i2c1_default>;
+	pinctrl-names = "default";
 	ft5336: ft5336@38 {
 		compatible = "focaltech,ft5336";
 		reg = <0x38>;
-		reset-gpios = <&gpiob 5 GPIO_ACTIVE_LOW>;
+		reset-gpios = <&gpio0 6 GPIO_ACTIVE_LOW>;
 	};
 };
 
-&rtc {
-	clocks = <&rcc STM32_CLOCK_BUS_APB4 0x00010000>,
-		 <&rcc STM32_SRC_LSE RTC_SEL(1)>;
+&ledc0 {  
+	#address-cells = <1>; 
+    #size-cells = <0>; 
+    pinctrl-0 = <&ledc0_default>;  
+    pinctrl-names = "default";  
+    status = "okay";  
+      
+    channel0@0 {  
+        reg = <0x0>;  
+        timer = <0>;  
+    };  
 };
 
-&timers2 {
-	st,prescaler = <10000>;
-	status = "okay";
+&pinctrl {  
+    ledc0_default: ledc0_default {  
+        group1 {  
+            pinmux = <LEDC_CH0_GPIO7>;
+            output-enable;  
+        };  
+    };  
+};
 
-	pwm2: pwm {
-	pinctrl-0 = <&tim2_ch2_pa1>;
-		pinctrl-names = "default";
-		status = "okay";
-	};
+&rtc_timer {  
+    status = "okay";  
 };

@@ -43,10 +43,10 @@ static int get_date_time(const struct device *rtc)
 }
 
 int main(void)
-{	
-	if (!device_is_ready(rtc)) {
-		return 0;
-	}
+{
+	//if (!device_is_ready(rtc)) {
+	//	return 0;
+	//}
 
 
 
@@ -66,7 +66,7 @@ int main(void)
 	display_blanking_off(display_dev);
 
 	while (1) {
-		get_date_time(rtc);
+		//get_date_time(rtc);
 		lv_task_handler();
 		k_sleep(K_MSEC(10));
 	}
