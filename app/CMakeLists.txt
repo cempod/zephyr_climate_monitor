@@ -2,18 +2,14 @@
 
 cmake_minimum_required(VERSION 3.20.0)
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
-project(blinky)
-
-file(GLOB_RECURSE SOURCES  "src/interface/*.c" "src/interface/fonts/*.c" "src/interface/colors/*.c")
-
-add_library(interface INTERFACE)
-target_sources(interface INTERFACE ${SOURCES})
-target_include_directories(interface INTERFACE src src/interface src/interface/colors)
+project(THWM)
 
 add_compile_definitions(LV_LVGL_H_INCLUDE_SIMPLE)
 
-target_sources(app PRIVATE src/main.c src/backlight.c)
+target_sources(app PRIVATE src/main.c)
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/core)
 
 target_link_libraries(app PRIVATE
-    interface
+    core
 )
