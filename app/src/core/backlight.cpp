@@ -26,7 +26,7 @@ void backlight_thread(void *p1, void *p2, void *p3) {
     static const struct pwm_dt_spec display_backlight = PWM_DT_SPEC_GET(DISPLAY_LED_NODE);
     static int current_brightness = 0;
     int step = 1;
-    EventMachine em = EventMachine::get_machine();
+    auto &em = EventMachine::get_machine();
     em.register_callback(EV_BACKLIGHT, change_backlight);
     sys_event_s backlight_event = {
         .event_type = EV_BACKLIGHT,
