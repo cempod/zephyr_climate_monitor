@@ -25,7 +25,6 @@
 
     aliases {
 		backlight0 = &display_back_led;
-		rtc = &rtc;
 		uart-0 = &uart0;
 	};
 
