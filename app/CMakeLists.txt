@@ -8,8 +8,24 @@ add_compile_definitions(LV_LVGL_H_INCLUDE_SIMPLE)
 
 target_sources(app PRIVATE src/main.c)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/core)
+target_sources(app PRIVATE
+${CMAKE_CURRENT_LIST_DIR}/src/core/system/backlight.cpp
+${CMAKE_CURRENT_LIST_DIR}/src/core/system/event_machine.cpp
+${CMAKE_CURRENT_LIST_DIR}/src/core/system/param_machine.cpp
+${CMAKE_CURRENT_LIST_DIR}/src/core/ui/ui.cpp
+${CMAKE_CURRENT_LIST_DIR}/src/core/ui/screens/screen_manager.cpp
+${CMAKE_CURRENT_LIST_DIR}/src/core/ui/screens/main_screen/main_screen.cpp
+${CMAKE_CURRENT_LIST_DIR}/src/core/ui/screens/settings/settings_screen.cpp
+${CMAKE_CURRENT_LIST_DIR}/src/core/ui/screens/logo/logo_screen.cpp
+${CMAKE_CURRENT_LIST_DIR}/src/core/ui/icons/weather_logo.c
+)
 
-target_link_libraries(app PRIVATE
-    core
+target_include_directories(app PRIVATE
+${CMAKE_CURRENT_LIST_DIR}/src/core
+${CMAKE_CURRENT_LIST_DIR}/src/core/system
+${CMAKE_CURRENT_LIST_DIR}/src/core/ui
+${CMAKE_CURRENT_LIST_DIR}/src/core/ui/screens
+${CMAKE_CURRENT_LIST_DIR}/src/core/ui/screens/main_screen
+${CMAKE_CURRENT_LIST_DIR}/src/core/ui/screens/settings
+${CMAKE_CURRENT_LIST_DIR}/src/core/ui/screens/logo
 )
