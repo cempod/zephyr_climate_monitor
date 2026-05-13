@@ -1,6 +1,5 @@
 #include <zephyr/dt-bindings/mipi_dbi/mipi_dbi.h>
 #include <zephyr/dt-bindings/pwm/pwm.h>
-#include "espressif/esp32s3/esp32s3_wroom_n16r8.dtsi"
 
 / {
 	chosen {
@@ -108,4 +107,14 @@
 
 &rtc_timer {  
     status = "okay";  
+};
+
+/* 16MB flash */
+&flash0 {
+	reg = <0x0 DT_SIZE_M(16)>;
+};
+
+/* 8MB psram */
+&psram0 {
+	size = <DT_SIZE_M(8)>;
 };
