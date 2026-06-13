@@ -30,6 +30,10 @@ void ScreenManager::set_screen(ScreenType type) {
             new_screen = &SettingsScreen::get();
             break;
         }
+        case ScreenType::WifiScreen: {
+            new_screen = &WifiScreen::get();
+            break;
+        }
         default: return;
     }
     new_screen->show();

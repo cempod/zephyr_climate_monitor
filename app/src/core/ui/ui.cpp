@@ -25,7 +25,7 @@ void ui_thread(void *p1, void *p2, void *p3) {
     while (1) {
 		sm.update();
 		lv_task_handler();
-		k_sleep(K_MSEC(10));
+		k_sleep(K_MSEC(50));
 	}
 
 }

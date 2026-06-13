@@ -3,8 +3,9 @@
 #include "screen_base.hpp"
 #include "main_screen.hpp"
 #include "settings_screen.hpp"
+#include "wifi_screen.hpp"
 
-enum class ScreenType { MainScreen, SettingsScreen };
+enum class ScreenType { MainScreen, SettingsScreen, WifiScreen };
 
 class ScreenManager {
     public:

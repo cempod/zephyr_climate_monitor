@@ -62,6 +62,10 @@
 	pinctrl-names = "default";
 };
 
+&dma {
+	status = "okay";
+};
+
 &spi2 {
 	status = "okay";
 	#address-cells = <1>;
